@@ -1,8 +1,8 @@
 # Drone-controller-by-finger-gesture
 This is a python project to control a drone by fingers gesture<br>
 Require
-- Require python 3.9.13
-- Require Tello Drone EDU
+- python 3.9.13
+- Tello Drone EDU
 
 # How to run this project
 ***To create a virtual environment named venv***
