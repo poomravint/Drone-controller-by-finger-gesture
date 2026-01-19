@@ -1,39 +1,9 @@
-import KeyPressModule as kp
-from djitellopy import Tello
+
 from time import sleep
 import cv2
-import os
 import time
 import HandTrackingModule as htm
 
-kp.init()
-t = Tello()
-t.connect() #! Connect to tello drone (Need to connect with tello wifi first)
-t.streamon()
-
-print("Battery:", t.get_battery())
-
-#? For control by keyboard
-def getKeyboardInput():
-    lr, fb, ud, yv = 0,0,0,0
-    speed = 30
-
-    if kp.getKey("a"): lr = -speed
-    elif kp.getKey("d"): lr = speed
-
-    if kp.getKey("w"): fb = speed
-    elif kp.getKey("s"): fb = -speed
-
-    if kp.getKey("o"): ud = speed
-    elif kp.getKey("p"): ud = -speed
-
-    if kp.getKey("k"): yv = -speed
-    elif kp.getKey("l"): yv = speed
-
-    if kp.getKey("q"):  t.land()
-    if kp.getKey("e"):  t.takeoff()
-
-    return [lr, fb, ud, yv]
 
 
 wCam, hCam = 640, 480
@@ -89,14 +59,14 @@ def finger_Controller(f, Lmlist):
         fb = -speed
     elif f == [0, 1, 0, 0, 0]:
         if x_tip > x_base + 30:
-            print("Command: RIGHT")  # นิ้วชี้เอียงไปทางขวา ตามหน้าจอ
+            print("Command: RIGHT") #นิ้วชี้เอียงไปทางขวา ตามหน้าจอ
             lr = speed
         elif x_tip < x_base - 30:
-            print("Command: LEFT")  # นิ้วชี้เอียงไปทางขวา ตามหน้าจอ
+            print("Command: LEFT") #นิ้วชี้เอียงไปทางขวา ตามหน้าจอ
             lr = -speed
-    # elif f == [0, 0, 0, 0, 1]:
-    #     print("Command: LEFT")
-    #     lr = -speed
+    elif f == [0, 0, 0, 0, 1]:
+        print("Command: LEFT")
+        lr = -speed
     elif f == [0, 0, 1, 1, 0]:
         print("Command: ROTATE LEFT")
         yv = -speed
@@ -112,16 +82,7 @@ def finger_Controller(f, Lmlist):
     return [lr, fb, ud, yv]
 
 while True:
-    #! Keyboard controll
-    vals = getKeyboardInput()
-    print(vals[0] , vals[1] , vals[2])
-    t.send_rc_control(vals[0], vals[1], vals[2], vals[3])
 
-    frame = t.get_frame_read().frame
-    frame = cv2.resize(frame, (640, 480))
-    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-    cv2.imshow("Tello", frame)
-    # ! Keyboard controll
 
     success, img = cap.read()
     img = detector.findHands(img)
@@ -132,7 +93,7 @@ while True:
         f = fingersUp(lmList)
         vals = finger_Controller(f, lmList)
         print(vals[0] , vals[1] , vals[2], vals[3])
-        t.send_rc_control(vals[0], vals[1], vals[2], vals[3])
+        # t.send_rc_control(vals[0], vals[1], vals[2], vals[3])
 
     # FPS
     cTime = time.time()
