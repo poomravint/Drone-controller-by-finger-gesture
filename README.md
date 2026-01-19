@@ -19,3 +19,8 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 
+***Run finger_control.py***
+```bash
+./python finger_control.py
+```
+
